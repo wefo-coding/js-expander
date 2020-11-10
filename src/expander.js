@@ -1,55 +1,60 @@
 (function (global) {
     
-    var toggleButtons = global.document.getElementsByClassName('wefo-expander-toggle');
-    var globalToggleButtons = global.document.getElementsByClassName('wefo-expander-global-toggle');
-    updateGlobalToggleButtons();
+    var toggleButtons;
+    var globalToggleButtons;
     
-    for(var i = 0; i < toggleButtons.length; i++){
-        toggleButtons[i].onclick = function(e){
-            var expander = getClosest(this, '.wefo-expander');
-            if(!expander){
-                return;
-            }
-            
-            if(expander.classList.contains('wefo-expanded')){
-                collapse(expander);
-            }
-            else{
-                var wrapper = getWrapper(expander);
-                if(wrapper.classList.contains('wefo-expander-single')){
-                    var wrapperExpanders = getWrapperExpanders(wrapper);
-                    for(var j = 0; j < wrapperExpanders.length; j++){
-                        if(wrapperExpanders[j].classList.contains('wefo-expanded')){
-                            collapse(wrapperExpanders[j]);
+    global.onload = function(){
+        toggleButtons = global.document.getElementsByClassName('wefo-expander-toggle');
+        globalToggleButtons = global.document.getElementsByClassName('wefo-expander-global-toggle');
+        updateGlobalToggleButtons();
+
+        for(var i = 0; i < toggleButtons.length; i++){
+            toggleButtons[i].onclick = function(e){
+                var expander = getClosest(this, '.wefo-expander');
+                if(!expander){
+                    return;
+                }
+
+                if(expander.classList.contains('wefo-expanded')){
+                    collapse(expander);
+                }
+                else{
+                    var wrapper = getWrapper(expander);
+                    if(wrapper.classList.contains('wefo-expander-single')){
+                        var wrapperExpanders = getWrapperExpanders(wrapper);
+                        for(var j = 0; j < wrapperExpanders.length; j++){
+                            if(wrapperExpanders[j].classList.contains('wefo-expanded')){
+                                collapse(wrapperExpanders[j]);
+                            }
                         }
                     }
+                    expand(expander);
                 }
-                expand(expander);
-            }
-            
-            updateGlobalToggleButtons();
-        };
-    }
-    
-    for(var i = 0; i < globalToggleButtons.length; i++){
-        globalToggleButtons[i].onclick = function(e){
-            var wrapper = getWrapper(this);
-            var wrapperExpanders = getWrapperExpanders(wrapper);
-            for(var j = 0; j < wrapperExpanders.length; j++){
-                if(wrapperExpanders[j].classList.contains(this.dataset.toggle)){
-                    if(this.classList.contains('wefo-expanded')){
+
+                updateGlobalToggleButtons();
+            };
+        }
+
+        for(var i = 0; i < globalToggleButtons.length; i++){
+            globalToggleButtons[i].onclick = function(e){
+                var wrapper = getWrapper(this);
+                var wrapperExpanders = getWrapperExpanders(wrapper);
+                for(var j = 0; j < wrapperExpanders.length; j++){
+                    if(wrapperExpanders[j].classList.contains(this.dataset.toggle)){
+                        if(this.classList.contains('wefo-expanded')){
+                            collapse(wrapperExpanders[j]);
+                        }
+                        else{
+                            expand(wrapperExpanders[j]);
+                        }
+                    } else if(wrapper.classList.contains('wefo-expander-single') && wrapperExpanders[j].classList.contains('wefo-expanded')){
                         collapse(wrapperExpanders[j]);
                     }
-                    else{
-                        expand(wrapperExpanders[j]);
-                    }
-                } else if(wrapper.classList.contains('wefo-expander-single') && wrapperExpanders[j].classList.contains('wefo-expanded')){
-                    collapse(wrapperExpanders[j]);
                 }
-            }
-            
-            updateGlobalToggleButtons();
-        };
+
+                updateGlobalToggleButtons();
+            };
+        }
     }
     
     
