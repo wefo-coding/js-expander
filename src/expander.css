@@ -1,0 +1,13 @@
+.wefo-expander-toggle,
+.wefo-expander-global-toggle{
+    cursor: pointer;
+}
+
+.wefo-expander:not(.wefo-expanded) .wefo-expandable{
+	max-height: 0;
+}
+
+.wefo-expandable{
+    overflow: hidden;
+    transition: max-height 0.5s ease-in;
+}
