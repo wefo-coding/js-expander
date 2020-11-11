@@ -42,12 +42,13 @@ article header{
 }
 article section header{
     padding: .5em calc(1em + 15px) .5em 1em;
-    border-bottom: none;
+    border-bottom: 1px solid #449;
     background-color: #55a;
     color: #fff;
 }
 article section section header{
     background-color: #77c;
+    border-bottom: 1px solid #66b;
 }
 article section{
     background-color: #ddf;
