@@ -33,13 +33,13 @@ Other Classes:
 You can use your own stylesheet. Only the important styles for the functionality are defined.
 The `:not()`-selector could be helpful to style expanded and not expanded contents different.
 ```css
-.wefo-expander:not(.wefo-expanded) > .wefo-expander-toggle,
-.wefo-expander-global-toggle:not(.wefo-expanded){
-    color: #55a; /* Blue toggle buttons if content is collapsed. */
+.wefo-expander:not(.wefo-expanded) > selector,
+.wefo-expander-global-toggle:not(.wefo-expanded) > selector{
+    ...
 }
-.wefo-expander-toggle,
-.wefo-expander-global-toggle{
-    color: #5a5; /* Green toggle buttons if content is expanded. */
+.wefo-expander > selector,
+.wefo-expander-global-toggle > selector{
+    ...
 }
 ```
 
