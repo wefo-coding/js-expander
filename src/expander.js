@@ -4,7 +4,7 @@
     var globalToggleButtons;
     var expandables;
     
-    global.onload = initialize;
+    global.addEventListener('load', initialize);
     
     /* Call this function if the contents of the website have changed. For example after the website has been loaded or if content has been loaded asynchronously.  */
     function initialize(){
@@ -14,16 +14,16 @@
         
         updateGlobalToggleButtons();
 
-        global.onresize = function(){
+        global.addEventListener('resize', function(){
             for(var i = 0; i < expandables.length; i++){
                 if(expandables[i].style.maxHeight.match(/^[1-9]/)){ /* max height is set */
                     expandables[i].style.maxHeight = 'none';
                 }
             }
-        }
+        });
         
         for(var i = 0; i < toggleButtons.length; i++){
-            toggleButtons[i].onclick = function(e){
+            toggleButtons[i].addEventListener('click', function(e){
                 var expander = getClosest(this, '.wefo-expander');
                 if(!expander){
                     return;
@@ -46,11 +46,11 @@
                 }
 
                 updateGlobalToggleButtons();
-            };
+            });
         }
 
         for(var i = 0; i < globalToggleButtons.length; i++){
-            globalToggleButtons[i].onclick = function(e){
+            globalToggleButtons[i].addEventListener('click', function(e){
                 var wrapper = getWrapper(this);
                 var wrapperExpanders = getWrapperExpanders(wrapper);
                 for(var j = 0; j < wrapperExpanders.length; j++){
@@ -67,7 +67,7 @@
                 }
 
                 updateGlobalToggleButtons();
-            };
+            });
         }
     }
     
