@@ -2,12 +2,26 @@
     
     var toggleButtons;
     var globalToggleButtons;
+    var expandables;
     
-    global.onload = function(){
+    global.onload = initialize;
+    
+    /* Call this function if the contents of the website have changed. For example after the website has been loaded or if content has been loaded asynchronously.  */
+    function initialize(){
+        expandables = global.document.getElementsByClassName('wefo-expandable');
         toggleButtons = global.document.getElementsByClassName('wefo-expander-toggle');
         globalToggleButtons = global.document.getElementsByClassName('wefo-expander-global-toggle');
+        
         updateGlobalToggleButtons();
 
+        global.onresize = function(){
+            for(var i = 0; i < expandables.length; i++){
+                if(expandables[i].style.maxHeight.match(/^[1-9]/)){ /* max height is set */
+                    expandables[i].style.maxHeight = 'none';
+                }
+            }
+        }
+        
         for(var i = 0; i < toggleButtons.length; i++){
             toggleButtons[i].onclick = function(e){
                 var expander = getClosest(this, '.wefo-expander');
