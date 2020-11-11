@@ -67,6 +67,9 @@
         for(var i = 0; i < parents.length; i++){
             parents[i].style.maxHeight = 'none';
         }
+        if(expander.classList.contains('wefo-expandable')){
+            expander.style.maxHeight = 'none';
+        }
         
         // Alle zugehörigen ausklappbaren Bereiche mit max height 0 initialisieren
         for(var i = 0; i < expandables.length; i++){
