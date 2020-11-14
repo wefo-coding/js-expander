@@ -56,6 +56,17 @@ article section{
 .content{
     padding: 0 1em;
 }
+.controls{
+	display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.controls span {
+    padding: .5em;
+}
+.controls .wefo-expanded {
+    color: #66b;
+}
 .expander-icon{
     position: absolute;
     z-index: 1;

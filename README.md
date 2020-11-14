@@ -22,6 +22,10 @@ Classes for extended functionality:
 * `wefo-expander-single`: Inside a wrapper with this class only one expander can be expanded.
 * `wefo-expander-global-toggle`: Toggle button for all expanders within a wrapper (or all expanders of the website, if there is no wrapper) with a specific class.
 * `wefo-expander-nested`: If there are nested wrappers, these are taken into account.
+* `wefo-expand-on-hover`: Add this class to the toggle buttons if you want to expand the content by hovering the toggle button.
+* `wefo-expand-on-left-focus`: [Not implemented yet!] Expanders which contain this class will collapse, if you click outside the expander.
+* `wefo-expand-on-[breakpoint]`: [Not implemented yet!] If you use this class on expanders, the content is expanded at the specified breakpoint (Bootstrap breakpoints -> xs|sm|md|lg|xl).
+* `wefo-collapse-on-[breakpoint]`: [Not implemented yet!] If you use this class on expanders, the content is collapsed at the specified breakpoint (Bootstrap breakpoints -> xs|sm|md|lg|xl).
 
 Other Classes:
 * `wefo-expanded`: Expanders get this class when they are unfolded. Also all global toggle buttons get this class if all relatted expanders are unfolded.
