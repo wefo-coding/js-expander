@@ -4,7 +4,7 @@
  * Link:    https://github.com/wefo-coding/js-expander
  * Author:  Florian Otten
  * Website: https://we-fo.de/
- * Version: 0.3.0
+ * Version: 0.3.1
  */
 
 (function (global) {
@@ -35,13 +35,13 @@
             
             if(toggleButtons[i].classList.contains('wefo-expand-on-hover')){
                 
-                /* Add mouse over handler to toggle buttons. */
-                toggleButtons[i].removeEventListener('mouseover', handleToggleButtonMouseOver);
-                toggleButtons[i].addEventListener('mouseover', handleToggleButtonMouseOver);
+                /* Add mouse enter handler to toggle buttons. */
+                toggleButtons[i].removeEventListener('mouseenter', handleToggleButtonMouseEnter);
+                toggleButtons[i].addEventListener('mouseenter', handleToggleButtonMouseEnter);
 
-                /* Add mouse out handler to toggle buttons. */
-                toggleButtons[i].removeEventListener('mouseout', handleToggleButtonMouseOut);
-                toggleButtons[i].addEventListener('mouseout', handleToggleButtonMouseOut);
+                /* Add mouse leave handler to toggle buttons. */
+                toggleButtons[i].removeEventListener('mouseleave', handleToggleButtonMouseLeave);
+                toggleButtons[i].addEventListener('mouseleave', handleToggleButtonMouseLeave);
             }
         }
         
@@ -53,13 +53,13 @@
             
             if(globalToggleButtons[i].classList.contains('wefo-expand-on-hover')){
                 
-                /* Add mouse over handler to global toggle buttons. */
-                globalToggleButtons[i].removeEventListener('mouseover', handleGlobalToggleButtonMouseOver);
-                globalToggleButtons[i].addEventListener('mouseover', handleGlobalToggleButtonMouseOver);
+                /* Add mouse enter handler to global toggle buttons. */
+                globalToggleButtons[i].removeEventListener('mouseenter', handleGlobalToggleButtonMouseEnter);
+                globalToggleButtons[i].addEventListener('mouseenter', handleGlobalToggleButtonMouseEnter);
                 
-                /* Add mouse out handler to global toggle buttons. */
-                globalToggleButtons[i].removeEventListener('mouseout', handleGlobalToggleButtonMouseOut);
-                globalToggleButtons[i].addEventListener('mouseout', handleGlobalToggleButtonMouseOut);
+                /* Add mouse leave handler to global toggle buttons. */
+                globalToggleButtons[i].removeEventListener('mouseleave', handleGlobalToggleButtonMouseLeave);
+                globalToggleButtons[i].addEventListener('mouseleave', handleGlobalToggleButtonMouseLeave);
             }
         }
         
@@ -106,7 +106,7 @@
         updateGlobalToggleButtons();
     }
     
-    function handleToggleButtonMouseOver(e){
+    function handleToggleButtonMouseEnter(e){
         var toggleButton = e.target;
         var expander = getClosest(toggleButton, '.wefo-expander');
         if(expander && !expander.classList.contains('wefo-expanded') && !this.classList.contains('wefo-expander-hover')){
@@ -115,7 +115,7 @@
         }
     }
     
-    function handleToggleButtonMouseOut(e){
+    function handleToggleButtonMouseLeave(e){
         var toggleButton = e.target;
         var expander = getClosest(toggleButton, '.wefo-expander');
         if(expander && expander.classList.contains('wefo-expander-hover') && expander.classList.contains('wefo-expanded')){
@@ -161,7 +161,7 @@
         updateGlobalToggleButtons();
     }
     
-    function handleGlobalToggleButtonMouseOver(e){
+    function handleGlobalToggleButtonMouseEnter(e){
         var toggleButton = e.target;
         if(!toggleButton.classList.contains('wefo-expanded') && !this.classList.contains('wefo-expander-hover')){
             handleGlobalToggleButtonClick(e);
@@ -169,7 +169,7 @@
         }
     }
     
-    function handleGlobalToggleButtonMouseOut(e){
+    function handleGlobalToggleButtonMouseLeave(e){
         var toggleButton = e.target;
         if(toggleButton.classList.contains('wefo-expander-hover') && toggleButton.classList.contains('wefo-expanded')){
             toggleButton.classList.remove('wefo-expander-hover');
