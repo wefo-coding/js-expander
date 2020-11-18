@@ -4,7 +4,7 @@
  * Link:    https://github.com/wefo-coding/js-expander
  * Author:  Florian Otten
  * Website: https://we-fo.de/
- * Version: 0.2.0
+ * Version: 0.3.0
  */
 
 (function (global) {
@@ -12,11 +12,10 @@
     var toggleButtons;
     var globalToggleButtons;
     var expandables;
-    var expanders;
     
     global.addEventListener('load', initialize);
     
-    /* Call this function if the contents of the website have changed. For example after the website has been loaded or if content has been loaded asynchronously.  */
+    /* Call this function if the content of the website have changed. For example after the website has been loaded or if content has been loaded asynchronously.  */
     function initialize(){
         expanders = global.document.getElementsByClassName('wefo-expander');
         expandables = global.document.getElementsByClassName('wefo-expandable');
@@ -25,133 +24,157 @@
         
         updateGlobalToggleButtons();
 
-        /* Set maxHeight to none on risize. */
-        global.addEventListener('resize', function(){
-            for(var i = 0; i < expandables.length; i++){
-                if(expandables[i].style.maxHeight.match(/^[1-9]/)){ /* max height is set */
-                    expandables[i].style.maxHeight = 'none';
-                }
-            }
-        });
+        global.removeEventListener('resize', handleResize);
+        global.addEventListener('resize', handleResize);
         
         for(var i = 0; i < toggleButtons.length; i++){
             
             /* Add click handler to toggle buttons. */
-            toggleButtons[i].addEventListener('click', function(e){
-                var expander = getClosest(this, '.wefo-expander');
-                if(!expander){
-                    return;
-                }
-                
-                if(expander.classList.contains('wefo-expander-hover')){
-                    expander.classList.remove('wefo-expander-hover');
-                    return;
-                }
-
-                if(expander.classList.contains('wefo-expanded')){
-                    collapse(expander);
-                }
-                else{
-                    var wrapper = getWrapper(expander);
-                    if(wrapper.classList.contains('wefo-expander-single')){
-                        var wrapperExpanders = getWrapperExpanders(wrapper);
-                        for(var j = 0; j < wrapperExpanders.length; j++){
-                            if(wrapperExpanders[j].classList.contains('wefo-expanded')){
-                                collapse(wrapperExpanders[j]);
-                            }
-                        }
-                    }
-                    expand(expander);
-                }
-
-                updateGlobalToggleButtons();
-            });
+            toggleButtons[i].removeEventListener('click', handleToggleButtonClick);
+            toggleButtons[i].addEventListener('click', handleToggleButtonClick);
             
             if(toggleButtons[i].classList.contains('wefo-expand-on-hover')){
                 
                 /* Add mouse over handler to toggle buttons. */
-                toggleButtons[i].addEventListener('mouseover', function(e){
-                    var expander = getClosest(this, '.wefo-expander');
-                    if(!expander){
-                        return;
-                    }
-                    if(!expander.classList.contains('wefo-expanded')){
-                        expander.classList.add('wefo-expander-hover');
-                        var wrapper = getWrapper(expander);
-                        if(wrapper.classList.contains('wefo-expander-single')){
-                            var wrapperExpanders = getWrapperExpanders(wrapper);
-                            for(var j = 0; j < wrapperExpanders.length; j++){
-                                if(wrapperExpanders[j].classList.contains('wefo-expanded')){
-                                    collapse(wrapperExpanders[j]);
-                                }
-                            }
-                        }
-                        expand(expander);
-                    }
-
-                    updateGlobalToggleButtons();
-                });
+                toggleButtons[i].removeEventListener('mouseover', handleToggleButtonMouseOver);
+                toggleButtons[i].addEventListener('mouseover', handleToggleButtonMouseOver);
 
                 /* Add mouse out handler to toggle buttons. */
-                toggleButtons[i].addEventListener('mouseout', function(e){
-                    var expander = getClosest(this, '.wefo-expander');
-                    if(!expander || !expander.classList.contains('wefo-expander-hover') || !expander.classList.contains('wefo-expanded')){
-                        return;
-                    }
-                    expander.classList.remove('wefo-expander-hover');
-                    collapse(expander);
-                    updateGlobalToggleButtons();
-                });
+                toggleButtons[i].removeEventListener('mouseout', handleToggleButtonMouseOut);
+                toggleButtons[i].addEventListener('mouseout', handleToggleButtonMouseOut);
             }
         }
         
         for(var i = 0; i < globalToggleButtons.length; i++){
             
             /* Add click handler to global toggle buttons */
-            globalToggleButtons[i].addEventListener('click', function(e){
-                if(this.classList.contains('wefo-expander-hover')){
-                    this.classList.remove('wefo-expander-hover');
-                    return;
-                }
-                var wrapper = getWrapper(this);
-                var wrapperExpanders = getWrapperExpanders(wrapper);
-                for(var j = 0; j < wrapperExpanders.length; j++){
-                    if(wrapperExpanders[j].classList.contains(this.dataset.toggle)){
-                        if(this.classList.contains('wefo-expanded')){
-                            collapse(wrapperExpanders[j]);
-                        }
-                        else{
-                            expand(wrapperExpanders[j]);
-                        }
-                    } else if(wrapper.classList.contains('wefo-expander-single') && wrapperExpanders[j].classList.contains('wefo-expanded')){
-                        collapse(wrapperExpanders[j]);
-                    }
-                }
-
-                updateGlobalToggleButtons();
-            });
+            globalToggleButtons[i].removeEventListener('click', handleGlobalToggleButtonClick);
+            globalToggleButtons[i].addEventListener('click', handleGlobalToggleButtonClick);
             
             if(globalToggleButtons[i].classList.contains('wefo-expand-on-hover')){
                 
                 /* Add mouse over handler to global toggle buttons. */
-                globalToggleButtons[i].addEventListener('mouseover', function(e){
-                    if(!this.classList.contains('wefo-expanded') && !this.classList.contains('wefo-expander-hover')){
-                        this.click();
-                        this.classList.add('wefo-expander-hover');
-                    }
-                });
+                globalToggleButtons[i].removeEventListener('mouseover', handleGlobalToggleButtonMouseOver);
+                globalToggleButtons[i].addEventListener('mouseover', handleGlobalToggleButtonMouseOver);
                 
                 /* Add mouse out handler to global toggle buttons. */
-                globalToggleButtons[i].addEventListener('mouseout', function(e){
-                   if(this.classList.contains('wefo-expander-hover') && this.classList.contains('wefo-expanded')){
-                        this.classList.remove('wefo-expander-hover');
-                        this.click();
-                    } 
-                });
+                globalToggleButtons[i].removeEventListener('mouseout', handleGlobalToggleButtonMouseOut);
+                globalToggleButtons[i].addEventListener('mouseout', handleGlobalToggleButtonMouseOut);
             }
         }
         
         
+    }
+    
+    function handleResize(e){
+        /* Set maxHeight to none on risize. */
+        for(var i = 0; i < expandables.length; i++){
+            if(expandables[i].style.maxHeight.match(/^[1-9]/)){ /* max height is set */
+                expandables[i].style.maxHeight = 'none';
+            }
+        }
+    }
+    
+    function handleToggleButtonClick(e){
+        var toggleButton = e.target;
+        var expander = getClosest(toggleButton, '.wefo-expander');
+        if(!expander){
+            return;
+        }
+
+        if(expander.classList.contains('wefo-expander-hover')){
+            expander.classList.remove('wefo-expander-hover');
+            return;
+        }
+
+        if(expander.classList.contains('wefo-expanded')){
+            collapse(expander);
+        }
+        else{
+            var wrapper = getWrapper(expander);
+            if(wrapper.classList.contains('wefo-expander-single')){
+                var wrapperExpanders = getWrapperExpanders(wrapper);
+                for(var j = 0; j < wrapperExpanders.length; j++){
+                    if(wrapperExpanders[j].classList.contains('wefo-expanded')){
+                        collapse(wrapperExpanders[j]);
+                    }
+                }
+            }
+            expand(expander);
+        }
+
+        updateGlobalToggleButtons();
+    }
+    
+    function handleToggleButtonMouseOver(e){
+        var toggleButton = e.target;
+        var expander = getClosest(toggleButton, '.wefo-expander');
+        if(expander && !expander.classList.contains('wefo-expanded') && !this.classList.contains('wefo-expander-hover')){
+            handleToggleButtonClick(e);
+            expander.classList.add('wefo-expander-hover');
+        }
+    }
+    
+    function handleToggleButtonMouseOut(e){
+        var toggleButton = e.target;
+        var expander = getClosest(toggleButton, '.wefo-expander');
+        if(expander && expander.classList.contains('wefo-expander-hover') && expander.classList.contains('wefo-expanded')){
+            expander.classList.remove('wefo-expander-hover');
+            handleToggleButtonClick(e);
+        }
+    }
+    
+    function handleGlobalToggleButtonClick(e){
+        var toggleButton = e.target;
+        if(toggleButton.classList.contains('wefo-expander-hover')){
+            toggleButton.classList.remove('wefo-expander-hover');
+            return;
+        }
+        
+        var wrapper;
+        var wrapperExpanders;
+        
+        if(! toggleButton.dataset.toggle && !toggleButton.dataset.global){
+            return;
+        }
+        if(toggleButton.dataset.toggle){
+            wrapper = getWrapper(toggleButton);
+            wrapperExpanders = getWrapperExpanders(wrapper);
+        }
+        if(toggleButton.dataset.global){
+            wrapper = global.document.getElementsByTagName('body')[0];
+            wrapperExpanders = wrapper.getElementsByClassName('wefo-expander');
+        }
+        for(var j = 0; j < wrapperExpanders.length; j++){
+            if((toggleButton.dataset.toggle && wrapperExpanders[j].classList.contains(toggleButton.dataset.toggle)) || (toggleButton.dataset.global && wrapperExpanders[j].classList.contains(toggleButton.dataset.global))){
+                if(toggleButton.classList.contains('wefo-expanded')){
+                    collapse(wrapperExpanders[j]);
+                }
+                else{
+                    expand(wrapperExpanders[j]);
+                }
+            } else if(wrapper.classList.contains('wefo-expander-single') && wrapperExpanders[j].classList.contains('wefo-expanded')){
+                collapse(wrapperExpanders[j]);
+            }
+        }
+
+        updateGlobalToggleButtons();
+    }
+    
+    function handleGlobalToggleButtonMouseOver(e){
+        var toggleButton = e.target;
+        if(!toggleButton.classList.contains('wefo-expanded') && !this.classList.contains('wefo-expander-hover')){
+            handleGlobalToggleButtonClick(e);
+            toggleButton.classList.add('wefo-expander-hover');
+        }
+    }
+    
+    function handleGlobalToggleButtonMouseOut(e){
+        var toggleButton = e.target;
+        if(toggleButton.classList.contains('wefo-expander-hover') && toggleButton.classList.contains('wefo-expanded')){
+            toggleButton.classList.remove('wefo-expander-hover');
+            handleGlobalToggleButtonClick(e);
+        } 
     }
     
     
@@ -207,10 +230,18 @@
         var expanded;
         for(var i = 0; i < globalToggleButtons.length; i++){
             expanded = true;
-            wrapper = getWrapper(globalToggleButtons[i]);
-            wrapperExpanders = getWrapperExpanders(wrapper);
+            
+            if(globalToggleButtons[i].dataset.toggle){
+                wrapper = getWrapper(globalToggleButtons[i]);
+                wrapperExpanders = getWrapperExpanders(wrapper);
+            }
+            if(globalToggleButtons[i].dataset.global){
+                wrapper = global.document.getElementsByTagName('body')[0];
+                wrapperExpanders = wrapper.getElementsByClassName('wefo-expander');
+            }
+            
             for(var j = 0; j < wrapperExpanders.length; j++){
-                if(wrapperExpanders[j].classList.contains(globalToggleButtons[i].dataset.toggle) && !wrapperExpanders[j].classList.contains('wefo-expanded')){
+                if(((globalToggleButtons[i].dataset.toggle && wrapperExpanders[j].classList.contains(globalToggleButtons[i].dataset.toggle)) || (globalToggleButtons[i].dataset.global && wrapperExpanders[j].classList.contains(globalToggleButtons[i].dataset.global))) && !wrapperExpanders[j].classList.contains('wefo-expanded')){
                     expanded = false;
                     break;
                 }
