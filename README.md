@@ -31,7 +31,8 @@ Other Classes:
 * `wefo-expanded`: Expanders get this class when they are unfolded. Also all global toggle buttons get this class if all relatted expanders are unfolded.
 
 ### Data-Attributes
-* `data-toggle`: Connects a global toggle button with expanders by a class name.
+* `data-toggle`: Connects a global toggle button with expanders by a class name within a wrapper.
+* `data-global`: Connects a global toggle button with expanders by a class name.
 
 ### Style
 You can use your own stylesheet. Only the important styles for the functionality are defined.
