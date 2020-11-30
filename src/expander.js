@@ -4,7 +4,7 @@
  * Link:    https://github.com/wefo-coding/js-expander
  * Author:  Florian Otten
  * Website: https://we-fo.de/
- * Version: 0.3.1
+ * Version: 0.4.0
  */
 
 (function (global) {
@@ -40,8 +40,8 @@
                 toggleButtons[i].addEventListener('mouseenter', handleToggleButtonMouseEnter);
 
                 /* Add mouse leave handler to toggle buttons. */
-                toggleButtons[i].removeEventListener('mouseleave', handleToggleButtonMouseLeave);
-                toggleButtons[i].addEventListener('mouseleave', handleToggleButtonMouseLeave);
+                getClosest(toggleButtons[i], '.wefo-expander').removeEventListener('mouseleave', handleExpanderMouseLeave);
+                getClosest(toggleButtons[i], '.wefo-expander').addEventListener('mouseleave', handleExpanderMouseLeave);
             }
         }
         
@@ -58,12 +58,10 @@
                 globalToggleButtons[i].addEventListener('mouseenter', handleGlobalToggleButtonMouseEnter);
                 
                 /* Add mouse leave handler to global toggle buttons. */
-                globalToggleButtons[i].removeEventListener('mouseleave', handleGlobalToggleButtonMouseLeave);
-                globalToggleButtons[i].addEventListener('mouseleave', handleGlobalToggleButtonMouseLeave);
+                getClosest(globalToggleButtons[i], '.wefo-expander-wrapper').removeEventListener('mouseleave', handleWrapperMouseLeave);
+                getClosest(globalToggleButtons[i], '.wefo-expander-wrapper').addEventListener('mouseleave', handleWrapperMouseLeave);
             }
         }
-        
-        
     }
     
     function handleResize(e){
@@ -76,8 +74,15 @@
     }
     
     function handleToggleButtonClick(e){
-        var toggleButton = e.target;
-        var expander = getClosest(toggleButton, '.wefo-expander');
+        var toggleButton;
+        var expander;
+        if(e.target.classList.contains('wefo-expander')){
+            expander = e.target;
+        }
+        else {
+            toggleButton = e.target;
+            expander = getClosest(toggleButton, '.wefo-expander');
+        }
         if(!expander){
             return;
         }
@@ -115,9 +120,8 @@
         }
     }
     
-    function handleToggleButtonMouseLeave(e){
-        var toggleButton = e.target;
-        var expander = getClosest(toggleButton, '.wefo-expander');
+    function handleExpanderMouseLeave(e){
+        var expander = e.target;
         if(expander && expander.classList.contains('wefo-expander-hover') && expander.classList.contains('wefo-expanded')){
             expander.classList.remove('wefo-expander-hover');
             handleToggleButtonClick(e);
@@ -125,7 +129,18 @@
     }
     
     function handleGlobalToggleButtonClick(e){
-        var toggleButton = e.target;
+        var toggleButton;
+        if(e.target.classList.contains('wefo-expander-global-toggle')){
+            toggleButton = e.target;
+        }
+        else{
+            toggleButton = e.target.getElementsByClassName('wefo-expander-global-toggle wefo-expander-hover')[0];
+            toggleButton.classList.remove('wefo-expander-hover');
+        }
+        if(!toggleButton){
+            return;
+        }
+
         if(toggleButton.classList.contains('wefo-expander-hover')){
             toggleButton.classList.remove('wefo-expander-hover');
             return;
@@ -153,7 +168,7 @@
                 else{
                     expand(wrapperExpanders[j]);
                 }
-            } else if(wrapper.classList.contains('wefo-expander-single') && wrapperExpanders[j].classList.contains('wefo-expanded')){
+            } else if(getWrapper(wrapperExpanders[j]).classList.contains('wefo-expander-single') && wrapperExpanders[j].classList.contains('wefo-expanded')){
                 collapse(wrapperExpanders[j]);
             }
         }
@@ -163,16 +178,17 @@
     
     function handleGlobalToggleButtonMouseEnter(e){
         var toggleButton = e.target;
-        if(!toggleButton.classList.contains('wefo-expanded') && !this.classList.contains('wefo-expander-hover')){
-            handleGlobalToggleButtonClick(e);
-            toggleButton.classList.add('wefo-expander-hover');
+        if(getWrapper(toggleButton).getElementsByClassName('wefo-expander-global-toggle wefo-expander-hover').length > 0){
+            getWrapper(toggleButton).getElementsByClassName('wefo-expander-global-toggle wefo-expander-hover')[0].classList.remove('wefo-expander-hover');
         }
+        toggleButton.classList.remove('wefo-expanded');
+        handleGlobalToggleButtonClick(e);
+        toggleButton.classList.add('wefo-expander-hover');
     }
     
-    function handleGlobalToggleButtonMouseLeave(e){
-        var toggleButton = e.target;
-        if(toggleButton.classList.contains('wefo-expander-hover') && toggleButton.classList.contains('wefo-expanded')){
-            toggleButton.classList.remove('wefo-expander-hover');
+    function handleWrapperMouseLeave(e){
+        var toggleButton = e.target.getElementsByClassName('wefo-expander-global-toggle wefo-expander-hover')[0];
+        if(toggleButton && toggleButton.classList.contains('wefo-expanded')){
             handleGlobalToggleButtonClick(e);
         } 
     }
