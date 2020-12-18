@@ -4,7 +4,7 @@
  * Link:    https://github.com/wefo-coding/js-expander
  * Author:  Florian Otten
  * Website: https://we-fo.de/
- * Version: 0.4.0
+ * Version: 0.4.1
  */
 
 (function (global) {
@@ -65,7 +65,7 @@
     }
     
     function handleResize(e){
-        /* Set maxHeight to none on risize. */
+        /* Set maxHeight to none on resize. */
         for(var i = 0; i < expandables.length; i++){
             if(expandables[i].style.maxHeight.match(/^[1-9]/)){ /* max height is set */
                 expandables[i].style.maxHeight = 'none';
@@ -132,6 +132,9 @@
         var toggleButton;
         if(e.target.classList.contains('wefo-expander-global-toggle')){
             toggleButton = e.target;
+        }
+        else if(getClosest(e.target, '.wefo-expander-global-toggle')){
+            toggleButton = getClosest(e.target, '.wefo-expander-global-toggle');
         }
         else{
             toggleButton = e.target.getElementsByClassName('wefo-expander-global-toggle wefo-expander-hover')[0];
